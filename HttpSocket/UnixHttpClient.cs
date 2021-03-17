@@ -14,7 +14,7 @@ namespace HttpSocket
         {
             var con = new SocketsHttpHandler();
 
-            con.ConnectCallback = SocketConnection;
+            con.ConnectCallback = SocketConnectionAsync;
             
             HttpClient = new HttpClient(con);
 
@@ -23,8 +23,7 @@ namespace HttpSocket
             EndPoint = new UnixDomainSocketEndPoint(unixSockDir);
             
         }
-
-        private async ValueTask<Stream> SocketConnection(SocketsHttpConnectionContext socketsHttpConnectionContext, CancellationToken cancellationToken)
+        private async ValueTask<Stream> SocketConnectionAsync(SocketsHttpConnectionContext socketsHttpConnectionContext, CancellationToken cancellationToken)
         {
             var socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.IP);
             

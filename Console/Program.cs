@@ -9,7 +9,7 @@ namespace Console
     {
         static void Main(string[] args)
         {
-            var httpClient = new UnixHttpClient("asasas").HttpClient;
+            var httpClient = new UnixHttpClient("/var/run/docker.sock").HttpClient;
             IServiceHandle handle = new DockerServiceHandle(httpClient);
             handle.GetServices();
         }
