@@ -45,7 +45,10 @@ namespace Docker
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, GET_URI);
 
             var response = _httpClient.SendAsync(requestMessage).Result;
-            System.Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+
+            var objs = JsonConvert.DeserializeObject<List<MyService>>(response.Content.ReadAsStringAsync().Result);
+            
+            System.Console.WriteLine();
             return default(List<MyService>);
         }
 
