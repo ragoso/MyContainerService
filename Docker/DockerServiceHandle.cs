@@ -21,23 +21,9 @@ namespace Docker
         private const string MEDIA_TYPE = "application/json";
         private readonly HttpClient _httpClient;
         
-        public DockerServiceHandle()
+        public DockerServiceHandle(HttpClient httpClient)
         {
-            var con = new SocketsHttpHandler();
-
-            con.ConnectCallback = SocketConnection;
-            
-            _httpClient = new HttpClient(con);
-
-        }
-
-        private async ValueTask<Stream> SocketConnection(SocketsHttpConnectionContext socketsHttpConnectionContext, CancellationToken CancellationToken)
-        {
-            var socket = new Socket(socketsHttpConnectionContext.DnsEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Unknown);
-            
-            await socket.ConnectAsync(socketsHttpConnectionContext.DnsEndPoint);
-
-            return new NetworkStream(socket);
+            _httpClient = httpClient;
         }
 
         public void CreateService(MyService service)
@@ -58,7 +44,7 @@ namespace Docker
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, GET_URI);
 
-            var response = _httpClient.Send(requestMessage);
+            var response = _httpClient.SendAsync(requestMessage);
 
             return default(List<MyService>);
         }
