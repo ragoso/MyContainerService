@@ -3,6 +3,9 @@ This is an simple abstraction of Docker API to easily and safely manage services
 
 #ToDo
 [ ] - Rest Endpoint with authentication.
+
 [ ] - CLI that recives MyService json to pass on Endpoint.
+
 [ ] - UI prefered in VueJS.
-[ ] - Increment this ToDo
+
+[ ] - Increment this ToDo.
