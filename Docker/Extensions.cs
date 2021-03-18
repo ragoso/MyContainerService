@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Core.DTO;
 
@@ -35,5 +36,21 @@ namespace Docker
         {
             return new MyService(string.Empty, string.Empty);
         }
+
+        public static MyService GetMyService(this DockerServiceResponse service)
+        {
+           return new MyService(service.Name, service.Image, service.Networks?.ToArray())
+           {
+                Id = service.ID,
+                Labels = service.Labels,
+                Volumes = service.Mounts?.Select(x => new Volume(x.ReadOnly, x.Source, x.Target))
+           };
+        }
+
+        public static IEnumerable<MyService> GetMyServices(this IEnumerable<DockerServiceResponse> containers)
+        {
+            return containers.Select(x => x.GetMyService());
+        }
+
     }
 }

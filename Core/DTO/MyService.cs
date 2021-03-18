@@ -13,7 +13,7 @@ namespace Core.DTO
 
         public MyService(string name, string image, params string[] networks) : this(name, image)
         {
-            Networks = networks.ToList();
+            Networks = networks?.ToList();
         }
 
         public MyService(string name, string image, IList<Volume> volumes) : this(name, image)
@@ -21,15 +21,22 @@ namespace Core.DTO
             Volumes = volumes;
         }
 
+        public MyService(string name, string image, IList<Volume> volumes, params string[] networks): this(name, image, volumes)
+        {
+            Networks = networks.ToList();
+        }
+
         public MyService(string name, string image, TraefikConfig traefikConfig) : this(name, image)
         {
             AddTraefikLabels(traefikConfig);
         }
-        public string Name { get; }
-        public string Image { get; }
-        public IList<string> Networks { get; }
-        public IDictionary<string, string> Labels { get; private set; }
-        public IList<Volume> Volumes { get; }
+
+        public string Id { get; init; }
+        public string Name { get; init; }
+        public string Image { get; init; }
+        public IEnumerable<string> Networks { get; init; }
+        public IDictionary<string, string> Labels { get; set; }
+        public IEnumerable<Volume> Volumes { get; set; }
 
         private void AddTraefikLabels(TraefikConfig config)
         {
@@ -56,9 +63,16 @@ namespace Core.DTO
 
     public class Volume
     {
-        public bool ReadOnly { get; init; }
-        public string Source { get; init; }
-        public string Target { get; init; }
+        public Volume(bool readOnly, string source, string target)
+        {
+            ReadOnly = readOnly;
+            Source = source;
+            Target = target;
+        }
+
+        public bool ReadOnly { get; set; }
+        public string Source { get; set; }
+        public string Target { get; set; }
     }
 
     public class TraefikConfig

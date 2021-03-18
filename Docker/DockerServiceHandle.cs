@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Core;
 using Core.DTO;
 using Newtonsoft.Json;
-using System.Net.Http;
 using System.IO;
 
 namespace Docker
@@ -40,16 +39,17 @@ namespace Docker
 
         }
 
-        public IList<MyService> GetServices()
+        public IEnumerable<MyService> GetServices()
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, GET_URI);
 
             var response = _httpClient.SendAsync(requestMessage).Result;
 
-            var objs = JsonConvert.DeserializeObject<List<MyService>>(response.Content.ReadAsStringAsync().Result);
+            var body = response.Content.ReadAsStringAsync().Result;
+
+            var dockerServices = JsonConvert.DeserializeObject<IList<DockerServiceResponse>>(body);
             
-            System.Console.WriteLine();
-            return default(List<MyService>);
+            return dockerServices.GetMyServices();
         }
 
         public void RemoveService(string serviceName)

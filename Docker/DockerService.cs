@@ -8,12 +8,6 @@ namespace Docker
 {
    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
 
-    public class ResponseContainer    
-    {
-        public string ID { get; set; }
-        public DockerService Spec { get; set; }
-    }
-
     public class DriverConfig
     {
     }

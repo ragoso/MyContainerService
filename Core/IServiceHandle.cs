@@ -9,7 +9,7 @@ namespace Core
         void CreateService(MyService service);
         void UpgradeService(string serviceName);
         void RemoveService(string serviceName);
-        IList<MyService> GetServices();
+        IEnumerable<MyService> GetServices();
     }
     
 }
