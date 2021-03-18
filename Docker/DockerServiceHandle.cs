@@ -28,13 +28,11 @@ namespace Docker
 
         public async void CreateService(MyService service)
         {
-            var dockerService = service.GetDockerService();
-
-            var json = JsonConvert.SerializeObject(dockerService);
+            var dockerService = service.GetDockerService().AsJson();
 
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, CREATE_URI);
 
-            requestMessage.Content = new StringContent(json, Encoding.UTF8, MEDIA_TYPE);
+            requestMessage.Content = new StringContent(dockerService, Encoding.UTF8, MEDIA_TYPE);
 
             var response = await _httpClient.SendAsync(requestMessage);
 
@@ -53,7 +51,7 @@ namespace Docker
 
             var body = await response.Content.ReadAsStringAsync();
 
-            var dockerServices = JsonConvert.DeserializeObject<IList<DockerServiceResponse>>(body);
+            var dockerServices = body.FromJson<IList<DockerServiceResponse>>();
             
             return dockerServices.GetMyServices();
         }
@@ -74,11 +72,9 @@ namespace Docker
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{GET_URI}/{service.Id}/update");
 
-            var serviceDocker = service.GetDockerService();
+            var serviceDocker = service.GetDockerService().AsJson();
 
-            var json = JsonConvert.SerializeObject(serviceDocker);
-
-            requestMessage.Content = new StringContent(json, Encoding.UTF8, MEDIA_TYPE);           
+            requestMessage.Content = new StringContent(serviceDocker, Encoding.UTF8, MEDIA_TYPE);           
 
             var response = await _httpClient.SendAsync(requestMessage);
 

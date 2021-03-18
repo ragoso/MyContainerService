@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using Core.DTO;
+using Newtonsoft.Json;
 
 namespace Docker
 {
@@ -50,6 +52,16 @@ namespace Docker
         public static IEnumerable<MyService> GetMyServices(this IEnumerable<DockerServiceResponse> containers)
         {
             return containers.Select(x => x.GetMyService());
+        }
+
+        public static T FromJson<T>(this string obj)
+        {
+            return JsonConvert.DeserializeObject<T>(obj);
+        }
+
+        public static string AsJson<T>(this T obj)
+        {
+            return JsonConvert.SerializeObject(obj);
         }
 
     }
