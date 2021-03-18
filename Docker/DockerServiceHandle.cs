@@ -9,6 +9,7 @@ using Core;
 using Core.DTO;
 using Newtonsoft.Json;
 using System.IO;
+using System;
 
 namespace Docker
 {
@@ -25,7 +26,7 @@ namespace Docker
             _httpClient = httpClient;
         }
 
-        public void CreateService(MyService service)
+        public async void CreateService(MyService service)
         {
             var dockerService = service.GetDockerService();
 
@@ -35,31 +36,56 @@ namespace Docker
 
             requestMessage.Content = new StringContent(json, Encoding.UTF8, MEDIA_TYPE);
 
-            var response = _httpClient.Send(requestMessage);
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            if (response.StatusCode != HttpStatusCode.Created)
+            {
+                throw new InvalidOperationException(response.Content.ReadAsStringAsync().Result);
+            }
 
         }
 
-        public IEnumerable<MyService> GetServices()
+        public async Task<IEnumerable<MyService>> GetServices()
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, GET_URI);
 
-            var response = _httpClient.SendAsync(requestMessage).Result;
+            var response = await _httpClient.SendAsync(requestMessage);
 
-            var body = response.Content.ReadAsStringAsync().Result;
+            var body = await response.Content.ReadAsStringAsync();
 
             var dockerServices = JsonConvert.DeserializeObject<IList<DockerServiceResponse>>(body);
             
             return dockerServices.GetMyServices();
         }
 
-        public void RemoveService(string serviceName)
+        public async void RemoveService(string serviceId)
         {
-            throw new System.NotImplementedException();
+            var requestMessage = new HttpRequestMessage(HttpMethod.Delete, $"{GET_URI}/{serviceId}");
+
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                throw new InvalidOperationException(await response.Content.ReadAsStringAsync());
+            }
         }
 
-        public void UpgradeService(string serviceName)
+        public async void UpdateService(MyService service)
         {
-            throw new System.NotImplementedException();
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{GET_URI}/{service.Id}/update");
+
+            var serviceDocker = service.GetDockerService();
+
+            var json = JsonConvert.SerializeObject(serviceDocker);
+
+            requestMessage.Content = new StringContent(json, Encoding.UTF8, MEDIA_TYPE);           
+
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                throw new InvalidOperationException(await response.Content.ReadAsStringAsync());
+            }
         }
     }
 }

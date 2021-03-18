@@ -17,17 +17,17 @@ namespace Docker
                     ContainerSpec = new ContainerSpec()
                     {
                         Image = myService.Image,
-                        Mounts = myService.Volumes.Select(x => new Mount()
+                        Mounts = myService.Volumes?.Select(x => new Mount()
                         {
                             ReadOnly = x.ReadOnly,
-                            Source = x.Source,
+                            Source = x?.Source,
                             Target = x.Target
-                        }).ToList()
+                        })?.ToList()
                     },
-                    Networks = myService.Networks.Select(x => new Network()
+                    Networks = myService.Networks?.Select(x => new Network()
                     {
                         Target = x
-                    }).ToList()
+                    })?.ToList()
                 }
             };
         }

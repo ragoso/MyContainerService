@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Core.DTO;
 
 namespace Core
@@ -7,9 +8,9 @@ namespace Core
     public interface IServiceHandle
     {
         void CreateService(MyService service);
-        void UpgradeService(string serviceName);
-        void RemoveService(string serviceName);
-        IEnumerable<MyService> GetServices();
+        void UpdateService(MyService service);
+        void RemoveService(string serviceId);
+        Task<IEnumerable<MyService>> GetServices();
     }
     
 }
