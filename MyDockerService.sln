@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Docker", "Docker\Docker.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Console\Console.csproj", "{E879CA8B-64EF-4FFB-8FA0-6DF0CE4FBC13}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Endpoint", "Endpoint\Endpoint.csproj", "{5B2104BE-9578-4C2B-BA7E-8A9B871F697F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,17 @@ Global
 		{E879CA8B-64EF-4FFB-8FA0-6DF0CE4FBC13}.Release|x64.Build.0 = Release|Any CPU
 		{E879CA8B-64EF-4FFB-8FA0-6DF0CE4FBC13}.Release|x86.ActiveCfg = Release|Any CPU
 		{E879CA8B-64EF-4FFB-8FA0-6DF0CE4FBC13}.Release|x86.Build.0 = Release|Any CPU
+		{5B2104BE-9578-4C2B-BA7E-8A9B871F697F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B2104BE-9578-4C2B-BA7E-8A9B871F697F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B2104BE-9578-4C2B-BA7E-8A9B871F697F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5B2104BE-9578-4C2B-BA7E-8A9B871F697F}.Debug|x64.Build.0 = Debug|Any CPU
+		{5B2104BE-9578-4C2B-BA7E-8A9B871F697F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5B2104BE-9578-4C2B-BA7E-8A9B871F697F}.Debug|x86.Build.0 = Debug|Any CPU
+		{5B2104BE-9578-4C2B-BA7E-8A9B871F697F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B2104BE-9578-4C2B-BA7E-8A9B871F697F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B2104BE-9578-4C2B-BA7E-8A9B871F697F}.Release|x64.ActiveCfg = Release|Any CPU
+		{5B2104BE-9578-4C2B-BA7E-8A9B871F697F}.Release|x64.Build.0 = Release|Any CPU
+		{5B2104BE-9578-4C2B-BA7E-8A9B871F697F}.Release|x86.ActiveCfg = Release|Any CPU
+		{5B2104BE-9578-4C2B-BA7E-8A9B871F697F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

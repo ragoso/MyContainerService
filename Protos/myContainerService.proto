@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+option csharp_namespace = "Endpoint";
+
+package mycontainerservice;
+
+// The greeting service definition.
+service MyContainerService {
+  // Sends a greeting
+  rpc Update (UpdateRequest) returns (UpdateReply);
+}
+
+
+message UpdateRequest {
+  Service service = 1;
+}
+
+
+message UpdateReply {
+  string message = 1;
+}
+
+message Service {
+  string id = 1;
+  string name = 2;
+  string image = 3;
+
+  repeated string networks = 4;
+  repeated Label labels = 5;
+  repeated Volume volume = 6;
+
+}
+
+message Label {
+  string key = 1;
+  string value = 2;
+}
+
+message Volume {
+  string source = 1;
+  string target = 2;
+  bool readOnly = 3;
+}
+
+
+
