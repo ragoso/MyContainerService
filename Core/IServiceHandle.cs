@@ -7,9 +7,9 @@ namespace Core
 {
     public interface IServiceHandle
     {
-        void CreateService(MyService service);
-        void UpdateService(MyService service);
-        void RemoveService(string serviceId);
+        Task<string> CreateService(MyService service);
+        Task<string> UpdateService(MyService service);
+        Task<string> RemoveService(string serviceId);
         Task<IEnumerable<MyService>> GetServices();
     }
     

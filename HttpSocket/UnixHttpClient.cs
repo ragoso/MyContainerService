@@ -28,8 +28,8 @@ namespace HttpSocket
             var socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.IP);
             
             await socket.ConnectAsync(EndPoint);
-            using var stream = new NetworkStream(socket);
-            return  stream;
+            
+            return  new NetworkStream(socket);;
         }
     }
 }

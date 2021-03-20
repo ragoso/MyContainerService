@@ -4,20 +4,42 @@ option csharp_namespace = "Endpoint";
 
 package mycontainerservice;
 
-// The greeting service definition.
 service MyContainerService {
-  // Sends a greeting
+  rpc Create (CreateRequest) returns (CreateReply);
   rpc Update (UpdateRequest) returns (UpdateReply);
+  rpc Remove (RemoveRequest) returns (RemoveReply);
+  rpc Get (GetRequest) returns (GetReply);
 }
 
+message CreateRequest {
+  Service service =1;
+}
 
 message UpdateRequest {
   Service service = 1;
 }
 
+message RemoveRequest {
+  string serviceNameOrId = 1;
+}
+
+message GetRequest {
+}
+
+message CreateReply {
+  string message = 1;
+}
 
 message UpdateReply {
   string message = 1;
+}
+
+message RemoveReply {
+  string message = 1;
+}
+
+message GetReply {
+  repeated Service services = 1;
 }
 
 message Service {

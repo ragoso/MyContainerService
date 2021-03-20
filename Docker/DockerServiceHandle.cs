@@ -26,7 +26,7 @@ namespace Docker
             _httpClient = httpClient;
         }
 
-        public async void CreateService(MyService service)
+        public async Task<string> CreateService(MyService service)
         {
             var dockerService = service.GetDockerService().AsJson();
 
@@ -36,10 +36,7 @@ namespace Docker
 
             var response = await _httpClient.SendAsync(requestMessage);
 
-            if (response.StatusCode != HttpStatusCode.Created)
-            {
-                throw new InvalidOperationException(response.Content.ReadAsStringAsync().Result);
-            }
+            return await response.Content.ReadAsStringAsync();
 
         }
 
@@ -56,19 +53,16 @@ namespace Docker
             return dockerServices.GetMyServices();
         }
 
-        public async void RemoveService(string serviceId)
+        public async Task<string> RemoveService(string serviceId)
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Delete, $"{GET_URI}/{serviceId}");
 
             var response = await _httpClient.SendAsync(requestMessage);
 
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                throw new InvalidOperationException(await response.Content.ReadAsStringAsync());
-            }
+            return await response.Content.ReadAsStringAsync();
         }
 
-        public async void UpdateService(MyService service)
+        public async Task<string> UpdateService(MyService service)
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{GET_URI}/{service.Id}/update");
 
@@ -78,10 +72,7 @@ namespace Docker
 
             var response = await _httpClient.SendAsync(requestMessage);
 
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                throw new InvalidOperationException(await response.Content.ReadAsStringAsync());
-            }
+            return await response.Content.ReadAsStringAsync();
         }
     }
 }
