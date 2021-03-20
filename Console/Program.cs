@@ -89,11 +89,13 @@ namespace Console
         private static void ParserAgrs(IEnumerable<string> args)
         {
             var showHelp = false;
+            var writeJson = false;
             var opt = new OptionSet()
             {
                 {"u|url=", "The url of grpc endpoints", u => url = u },
                 {"j|json=", "The json of service to be handled", j => json = j},
                 {"a|action=", "The action to perform (create,update,remove)", a => action = (Actions)Enum.Parse(typeof(Actions), a)},
+                {"w|write", "Write json example", w => writeJson = w != null},
                 {"h|help", "Print help", h => showHelp = h != null}
             };
 
@@ -114,6 +116,12 @@ namespace Console
                 Environment.Exit(0);
             }
 
+            if (writeJson)
+            {
+                PrintJsonExample();
+                Environment.Exit(0);       
+            }
+
             if (string.IsNullOrEmpty(json))
             {
                 System.Console.WriteLine("Json path must be passed with -j or --json");
@@ -128,7 +136,6 @@ namespace Console
             System.Console.WriteLine();
             System.Console.WriteLine("Options:");
             opt.WriteOptionDescriptions (System.Console.Out);
-            PrintJsonExample();
         }
 
         private static void PrintJsonExample()
