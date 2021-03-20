@@ -31,7 +31,12 @@ namespace Core.DTO
             AddTraefikLabels(traefikConfig);
         }
 
-        public string Id { get; init; }
+        public MyService()
+        {
+            
+        }
+
+        public string Id { get; set; }
         public string Name { get; init; }
         public string Image { get; init; }
         public IEnumerable<string> Networks { get; init; }
