@@ -1,0 +1,1 @@
+{"Id":"5c92a3d1-3b80-47bb-8f5a-d825451e642d","Name":"test","Image":"redis","Networks":["backend","db_net"],"Labels":{"createdByMyService":"true"},"Volumes":[{"ReadOnly":false,"Source":"/tmp/data","Target":"/app"}]}

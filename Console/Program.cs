@@ -8,33 +8,43 @@ using System.IO;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-
+using Mono.Options;
 namespace Console
 {
+    public enum Actions
+    {
+        Create,
+        Update,
+        Remove,
+        List,
+        Non
+    }
     class Program
     {
+        private static string url = "https://localhost:5001";
+        private static string json = string.Empty;
+        private static Actions action = Actions.Non;
+
         static void Main(string[] args)
         {
 
             try
             {
-                var url = GetParam(args, "url");
-                var serviceJsonParam = GetParam(args, "service-json");
-                var action = GetParam(args, "action");
+                ParserAgrs(args);
 
-                var service = ReadMyServiceJson(serviceJsonParam);
+                var service = ReadMyServiceJson(json);
 
                 var client = GetClient(url);
 
                 switch(action)
                 {
-                    case "create":
+                    case Actions.Create:
                         Create(service, client);
                         break;
-                    case "remove":
+                    case Actions.Remove:
                         Remove(service, client);
                         break;
-                    case "update":
+                    case Actions.Update:
                         Update(service, client);
                         break;
                     default:
@@ -76,12 +86,48 @@ namespace Console
             System.Console.WriteLine(reply.Message);
         }
 
-        private static void PrintHelp()
+        private static void ParserAgrs(IEnumerable<string> args)
         {
-            System.Console.WriteLine("--url=https://myEndpointGrpd");
-            System.Console.WriteLine("--service-json=./myservice.json");
-            System.Console.WriteLine("--action=create|remove|update");
+            var showHelp = false;
+            var opt = new OptionSet()
+            {
+                {"u|url=", "The url of grpc endpoints", u => url = u },
+                {"j|json=", "The json of service to be handled", j => json = j},
+                {"a|action=", "The action to perform (create,update,remove)", a => action = (Actions)Enum.Parse(typeof(Actions), a)},
+                {"h|help", "Print help", h => showHelp = h != null}
+            };
+
+            try
+            {
+                opt.Parse(args);
+            }
+            catch (OptionException e)
+            {
+                System.Console.WriteLine (e.Message);
+                System.Console.WriteLine ("Try `Console --help' for more information.");
+                return;
+            }
+
+            if (showHelp)
+            {
+                ShowHelp(opt);
+                Environment.Exit(0);
+            }
+
+            if (string.IsNullOrEmpty(json))
+            {
+                System.Console.WriteLine("Json path must be passed with -j or --json");
+                Environment.Exit(1);
+            }
+            
+        }
+        private static void ShowHelp(OptionSet opt)
+        {
+            System.Console.WriteLine("Usage: Console ...");
+            System.Console.WriteLine("Interact com MyContainerService");
             System.Console.WriteLine();
+            System.Console.WriteLine("Options:");
+            opt.WriteOptionDescriptions (System.Console.Out);
             PrintJsonExample();
         }
 
@@ -101,31 +147,6 @@ namespace Console
             };
 
             System.Console.WriteLine(JsonConvert.SerializeObject(service));
-        }
-
-        private static string GetParam(string[] args, string paramName)
-        {
-            if (args.Contains("--help") || args.Contains("-h") || args.Length == 0)
-            {
-                PrintHelp();
-                Environment.Exit(0);
-            }
-
-            var param = args.FirstOrDefault(x => x.Contains($"--{paramName}="));
-
-            if (string.IsNullOrEmpty(param))
-            {
-                throw new ArgumentNullException($"Argument --{paramName}= must be passed.");
-            }
-
-            var paramSplited = param.Split("=");
-
-            if (paramSplited.Length != 2)
-            {
-                throw new ArgumentNullException($"Argument --{paramName}= has passed with invalid format");
-            }
-
-            return paramSplited.Last();
         }
 
         private static MyContainerService.MyContainerServiceClient GetClient(string url)
