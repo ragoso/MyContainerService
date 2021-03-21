@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Core;
+using Endpoint.Ex;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 

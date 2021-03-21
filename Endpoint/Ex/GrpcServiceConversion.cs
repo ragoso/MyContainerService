@@ -2,8 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.DTO;
 
-
-namespace Endpoint
+namespace Endpoint.Ex
 {
     public static class GrpcServiceConversion
     {
