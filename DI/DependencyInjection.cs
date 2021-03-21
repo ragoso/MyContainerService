@@ -1,4 +1,5 @@
 using Core;
+using DI;
 using Docker;
 using HttpSocket;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +10,7 @@ namespace Endpoint
     {
         public static void DefineServiceHandle(this IServiceCollection services)
         {
-            services.AddScoped<IServiceHandle, DockerServiceHandle>(x => new DockerServiceHandle(new UnixHttpClient("/var/run/docker.sock").HttpClient));
+            services.AddScoped<IServiceHandle>(x => ServiceHandleFactory.CreateServiceHandle());
         }
     }
 }

@@ -9,6 +9,8 @@ using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using Mono.Options;
+using Grpc.Core;
+
 namespace Console
 {
     public enum Actions
@@ -24,6 +26,7 @@ namespace Console
         private static string url = "https://localhost:5001";
         private static string json = string.Empty;
         private static Actions action = Actions.Non;
+        private static string token = string.Empty;
 
         static void Main(string[] args)
         {
@@ -93,6 +96,7 @@ namespace Console
             var opt = new OptionSet()
             {
                 {"u|url=", "The url of grpc endpoints", u => url = u },
+                {"k|key=", "The path of key SSL/TLS credentials", u => token = u},
                 {"j|json=", "The json of service to be handled", j => json = j},
                 {"a|action=", "The action to perform (create,update,remove)", a => action = (Actions)Enum.Parse(typeof(Actions), a)},
                 {"w|write", "Write json example", w => writeJson = w != null},
@@ -120,6 +124,12 @@ namespace Console
             {
                 PrintJsonExample();
                 Environment.Exit(0);       
+            }
+
+            if (string.IsNullOrEmpty(token))
+            {
+                System.Console.WriteLine("Key path must be passwd with -k or --key");
+                Environment.Exit(1);
             }
 
             if (string.IsNullOrEmpty(json))
@@ -159,12 +169,11 @@ namespace Console
         private static MyContainerService.MyContainerServiceClient GetClient(string url)
         {
             var httpHandler = new HttpClientHandler();
-            // Return `true` to allow certificates that are untrusted/invalid
             httpHandler.ServerCertificateCustomValidationCallback =
             HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
             var channel = GrpcChannel.ForAddress(url,
-            new GrpcChannelOptions { HttpHandler = httpHandler });
+            new GrpcChannelOptions { HttpHandler = httpHandler});
 
             var client = new MyContainerService.MyContainerServiceClient(channel);
             return client;

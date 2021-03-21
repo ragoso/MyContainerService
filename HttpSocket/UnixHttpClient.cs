@@ -8,28 +8,30 @@ namespace HttpSocket
 {
     public class UnixHttpClient
     {
-        public HttpClient HttpClient { get; }
-        private UnixDomainSocketEndPoint EndPoint { get; }
-        public UnixHttpClient(string unixSockDir)
+        private static UnixDomainSocketEndPoint _endPoint;
+
+        private static async ValueTask<Stream> SocketConnectionAsync(SocketsHttpConnectionContext socketsHttpConnectionContext, CancellationToken cancellationToken)
+        {
+            var socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.IP);
+            
+            await socket.ConnectAsync(_endPoint);
+            
+            return  new NetworkStream(socket);;
+        }
+
+        public static HttpClient CreateHttpClient(string unixSockPath)
         {
             var con = new SocketsHttpHandler();
 
             con.ConnectCallback = SocketConnectionAsync;
             
-            HttpClient = new HttpClient(con);
+            var httpClient = new HttpClient(con);
 
-            HttpClient.BaseAddress = new System.Uri("http://hub.docker.io");
+            httpClient.BaseAddress = new System.Uri("http://hub.docker.io");
 
-            EndPoint = new UnixDomainSocketEndPoint(unixSockDir);
-            
-        }
-        private async ValueTask<Stream> SocketConnectionAsync(SocketsHttpConnectionContext socketsHttpConnectionContext, CancellationToken cancellationToken)
-        {
-            var socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.IP);
-            
-            await socket.ConnectAsync(EndPoint);
-            
-            return  new NetworkStream(socket);;
+            _endPoint = new UnixDomainSocketEndPoint(unixSockPath);
+
+            return httpClient;
         }
     }
 }
