@@ -4,7 +4,7 @@ using Docker;
 using HttpSocket;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Endpoint
+namespace DI
 {
     public static class DependencyInjection
     {
