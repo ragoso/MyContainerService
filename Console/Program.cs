@@ -7,7 +7,7 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using Mono.Options;
-using Endpoint.Ex;
+using Grpc.Core;
 
 namespace Console
 {
@@ -31,7 +31,7 @@ namespace Console
 
             try
             {
-                ParserAgrs(args);
+                ParserArgs(args);
 
                 var service = ReadMyServiceJson(json);
 
@@ -59,12 +59,22 @@ namespace Console
 
         }
 
+        private static Metadata GetTokenHeader()
+        {
+            var headers = new Metadata();
+
+            headers.Add("Authorization", $"Bearer {token}");
+
+            return headers;
+        }
         private static void Update(MyService service, MyContainerService.MyContainerServiceClient client)
         {
+                    
+            
             var reply = client.Update(new UpdateRequest()
             {
                 Service = service.ToGrpcService()
-            });
+            }, GetTokenHeader());
 
             System.Console.WriteLine(reply.Message);
         }
@@ -73,7 +83,7 @@ namespace Console
         {
             var reply = client.Remove(new RemoveRequest() {
                 ServiceNameOrId = service.Name
-            });
+            }, GetTokenHeader());
 
             System.Console.WriteLine(reply.Message);
         }
@@ -83,18 +93,18 @@ namespace Console
             var reply = client.Create(new CreateRequest()
             {
                 Service = service.ToGrpcService()
-            });
+            }, GetTokenHeader());
             System.Console.WriteLine(reply.Message);
         }
 
-        private static void ParserAgrs(IEnumerable<string> args)
+        private static void ParserArgs(IEnumerable<string> args)
         {
             var showHelp = false;
             var writeJson = false;
             var opt = new OptionSet()
             {
                 {"u|url=", "The url of grpc endpoints", u => url = u },
-                {"k|key=", "The path of key SSL/TLS credentials", u => token = u},
+                {"t|token=", "The Bearer token", u => token = u},
                 {"j|json=", "The json of service to be handled", j => json = j},
                 {"a|action=", "The action to perform (create,update,remove)", a => action = (Actions)Enum.Parse(typeof(Actions), a)},
                 {"w|write", "Write json example", w => writeJson = w != null},
@@ -126,7 +136,7 @@ namespace Console
 
             if (string.IsNullOrEmpty(token))
             {
-                System.Console.WriteLine("Key path must be passwd with -k or --key");
+                System.Console.WriteLine("Token path must be passwd with -t or --token");
                 Environment.Exit(1);
             }
 

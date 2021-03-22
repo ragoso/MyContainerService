@@ -13,7 +13,7 @@ namespace Endpoint
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddGrpc();
-            services.DefineServiceHandle();
+            services.AddServiceHandle();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -24,8 +24,6 @@ namespace Endpoint
             }
 
             app.UseRouting();
-
-            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {

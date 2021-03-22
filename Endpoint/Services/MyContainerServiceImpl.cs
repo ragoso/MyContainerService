@@ -1,15 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Core;
-using Endpoint.Ex;
 using Grpc.Core;
+using GRPC;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 
 namespace Endpoint
 {
-    public partial class MyContainerServiceImpl : MyContainerService.MyContainerServiceBase
+    [Authorize(AuthenticationSchemes = 
+    JwtBearerDefaults.AuthenticationScheme)]
+    public  class MyContainerServiceImpl : MyContainerService.MyContainerServiceBase
     {
         private readonly IServiceHandle _handle;
         private readonly ILogger<MyContainerServiceImpl> _logger;

@@ -1,16 +1,34 @@
 using Core;
-using DI;
-using Docker;
-using HttpSocket;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System;
 
 namespace DI
 {
     public static class DependencyInjection
     {
-        public static void DefineServiceHandle(this IServiceCollection services)
+        public static void AddServiceHandle(this IServiceCollection services)
         {
             services.AddScoped<IServiceHandle>(x => ServiceHandleFactory.CreateServiceHandle());
         }
+
+        public static void AddTokenParser(this IServiceCollection services)
+        {
+            services.AddAuthentication()
+                    .AddCookie(options => {
+                        options.LoginPath = "/Account/Unauthorized/";
+                        options.AccessDeniedPath = "/Account/Forbidden/";
+                    })
+                    .AddJwtBearer(options => {
+                        options.Audience = "http://localhost:5001/";
+                        options.Authority = "http://localhost:5000/";
+                        options.RequireHttpsMetadata = false;
+                        options.Validate("test");
+                    });
+
+            services.AddAuthorization();
+        }
+
     }
 }

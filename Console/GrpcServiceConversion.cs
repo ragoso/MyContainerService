@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.DTO;
+using Endpoint;
 
-namespace Endpoint.Ex
+namespace Console
 {
     public static class GrpcServiceConversion
     {
@@ -45,7 +46,7 @@ namespace Endpoint.Ex
 
             if (service.Labels?.Any() ?? false)
             {
-                serviceGrpc.Volume.AddRange(service.Volumes?.Select(x => new Volume()
+                serviceGrpc.Volume.AddRange(service.Volumes?.Select(x => new Endpoint.Volume()
                 {
                     ReadOnly = x.ReadOnly,
                     Source = x.Source,
