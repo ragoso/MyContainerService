@@ -17,7 +17,6 @@ namespace Docker
     {
         private const string CREATE_URI = "/v1.24/services/create";
         private const string GET_URI = "/v1.24/services";
-        private const string BASE_URI = "unix:///var/run/docker.sock";
         private const string MEDIA_TYPE = "application/json";
         private readonly HttpClient _httpClient;
         

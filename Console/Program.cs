@@ -168,6 +168,10 @@ namespace Console
                 Volumes = new List<Core.DTO.Volume>()
                 {
                     new Core.DTO.Volume(false, "/tmp/data", "/app")
+                },
+                Ports = new List<Core.DTO.Port>()
+                {
+                    new Core.DTO.Port(80, "tcp")
                 }
             };
 

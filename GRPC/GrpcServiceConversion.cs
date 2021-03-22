@@ -23,7 +23,8 @@ namespace GRPC
                 Id = service.Id,
                 Labels = service.Labels.ToDictionary(x => x.Key, y => y.Value),
                 Networks = service.Networks,
-                Volumes = service.Volume.Select(x => new Core.DTO.Volume(x.ReadOnly, x.Source, x.Target))
+                Volumes = service.Volume?.Select(x => new Core.DTO.Volume(x.ReadOnly, x.Source, x.Target)),
+                Ports = service.Port?.Select(x => new Core.DTO.Port(x.Target, x.Publish, x.Protocol))
             };
         }
         public static Service ToGrpcService(this MyService service)
@@ -59,6 +60,15 @@ namespace GRPC
                 serviceGrpc.Networks.AddRange(service.Networks);
             }
             
+            if (service.Ports?.Any() ?? false)
+            {
+                serviceGrpc.Port.AddRange(service.Ports?.Select(x => new Endpoint.Port()
+                {
+                    Protocol = x.Protocol,
+                    Publish = x.ExternalPort ?? 0,
+                    Target = x.InternalPort
+                }));
+            }
 
             return serviceGrpc;
         }

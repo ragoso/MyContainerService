@@ -42,6 +42,7 @@ namespace Core.DTO
         public IEnumerable<string> Networks { get; init; }
         public IDictionary<string, string> Labels { get; set; }
         public IEnumerable<Volume> Volumes { get; set; }
+        public IEnumerable<Port> Ports { get; set; }
 
         private void AddTraefikLabels(TraefikConfig config)
         {
@@ -78,6 +79,27 @@ namespace Core.DTO
         public bool ReadOnly { get; set; }
         public string Source { get; set; }
         public string Target { get; set; }
+    }
+
+    public class Port
+    {
+        public Port(int internalPort, int externalPort, string protocol)
+        {
+            InternalPort = internalPort;
+            ExternalPort = externalPort;
+            Protocol = protocol;
+        }
+
+        
+        public Port(int internalPort, string protocol)
+        {
+            InternalPort = internalPort;
+            Protocol = protocol;
+        }
+
+        public int InternalPort { get; set; }
+        public int? ExternalPort { get; set; }
+        public string Protocol { get; set; }
     }
 
     public class TraefikConfig

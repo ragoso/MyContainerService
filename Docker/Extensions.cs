@@ -29,14 +29,19 @@ namespace Docker
                     Networks = myService.Networks?.Select(x => new Network()
                     {
                         Target = x
+                    
                     })?.ToList()
+                },
+                EndpointSpec = new EndpointSpec()
+                {
+                    Ports = myService.Ports.Select(x => new Port()
+                    {
+                        Protocol = x.Protocol,
+                        PublishedPort = x.ExternalPort ?? 0,
+                        TargetPort = x.InternalPort
+                    }).ToList()
                 }
             };
-        }
-
-        public static MyService GetMyService(this DockerService dockerService)
-        {
-            return new MyService(string.Empty, string.Empty);
         }
 
         public static MyService GetMyService(this DockerServiceResponse service)
@@ -45,7 +50,8 @@ namespace Docker
            {
                 Id = service.ID,
                 Labels = service.Labels,
-                Volumes = service.Mounts?.Select(x => new Volume(x.ReadOnly, x.Source, x.Target))
+                Volumes = service.Mounts?.Select(x => new Volume(x.ReadOnly, x.Source, x.Target)),
+                Ports = service.Ports?.Select(x => new Core.DTO.Port(x.TargetPort, x.PublishedPort, x.Protocol))
            };
         }
 

@@ -1,1 +1,24 @@
-{"Id":"5c92a3d1-3b80-47bb-8f5a-d825451e642d","Name":"test","Image":"redis","Networks":[],"Labels":{"createdByMyService":"true"},"Volumes":[{"ReadOnly":false,"Source":"/tmp/data","Target":"/app"}]}
+{
+    "Name": "MCS",
+    "Image": "MCS:latest",
+    "Networks": [
+      "mcs_backend"
+    ],
+    "Labels": {
+      "createdByMyService": "true"
+    },
+    "Volumes": [
+      {
+        "ReadOnly": true,
+        "Source": "/var/run/docker.sock",
+        "Target": "/var/run/docker.sock"
+      }
+    ],
+    "Ports": [
+        {
+          "InternalPort": 5001,
+          "ExternalPort": 5001,
+          "Protocol": "tcp"
+        }
+      ]
+  }
