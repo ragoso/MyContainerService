@@ -5,8 +5,8 @@ This is an simple abstraction of Docker (For now) Services API to easily and saf
 
 # ToDo
 - [ ] Tests, tests, tests and more tests.
-- [ ] GRPC Endpoint.
-- [ ] CLI that recives MyService json to pass on Endpoint.
+- [x] GRPC Endpoint.
+- [x] CLI that recives MyService json to pass on Endpoint.
 - [ ] GRPC Authentication.
 - [ ] Integrate with Kubernetes.
 - [ ] UI prefered in VueJS.
