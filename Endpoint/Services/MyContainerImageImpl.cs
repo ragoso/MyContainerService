@@ -22,21 +22,19 @@ namespace Endpoint
             _handle = handle;
         }
 
-        public override async Task<BuildReply> Build(IAsyncStreamReader<BuildRequest> requestStream, ServerCallContext context)
+        public override async Task<BuildReply> Build(BuildRequest request, ServerCallContext context)
         {
-            using(var memStream = new MemoryStream())
-            {
-                var tarFile = new CodedOutputStream(memStream);
-                requestStream.Current.WriteTo(tarFile);
-                
-                var tag = requestStream.Current.Tag;
-                var response = await _handle.BuildImage(memStream, tag);
+            using var memStream = new MemoryStream();
+            
+            request.TarFile.WriteTo(memStream);
+            
+            var tag = request.Tag;
+            var response = await _handle.BuildImage(memStream, tag);
 
-                return new BuildReply()
-                {
-                    Message = response
-                };
-            }
+            return new BuildReply()
+            {
+                Message = response
+            };
         }
     }
 }

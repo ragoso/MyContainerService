@@ -17,8 +17,6 @@ namespace Docker
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{BUILD_URI}?t={tag}");
             
-            requestMessage.Headers.Add("Content-type", "application/x-tar");
-            
             requestMessage.Content = new StreamContent(tar);
 
             var response = await _httpClient.SendAsync(requestMessage);

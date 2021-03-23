@@ -5,7 +5,7 @@ option csharp_namespace = "Endpoint";
 package mycontainerimage;
 
 service MyContainerImage {
-  rpc Build (stream BuildRequest) returns (BuildReply);
+  rpc Build (BuildRequest) returns (BuildReply);
  
 }
 

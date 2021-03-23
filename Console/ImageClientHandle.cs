@@ -21,17 +21,15 @@ namespace Console
 
         public async Task<string> BuildImage(Stream tar, string tag)
         {
-            using var stream = _client.Build();
-
             var fileByte = Google.Protobuf.ByteString.FromStream(tar);
 
-            await Task.Run(() => stream.RequestStream.WriteAsync(new BuildRequest()
+            var reply = await Task.Run(() => _client.Build(new BuildRequest()
             {
                 Tag = tag,
                 TarFile = fileByte
             }));
 
-            return stream.ResponseAsync.Result.Message;
+            return reply.Message;
         }
     }
 }

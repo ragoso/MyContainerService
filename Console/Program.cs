@@ -66,8 +66,6 @@ namespace Console
         }
         private static void BuildImage()
         {
-            var client = GetImageClient(url);
-
             _imageHandle = new ImageClientHandle(GetImageClient(url), token);
 
             using var fileStream = new FileStream(file, FileMode.Open);
@@ -78,8 +76,7 @@ namespace Console
 
         }
         private static void Update()
-        {
-            
+        {   
             var service = ReadMyServiceJson(file);
 
             _serviceHandle = new ServiceClientHandle(GetServiceClient(url), token);
