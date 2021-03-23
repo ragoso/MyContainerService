@@ -63,7 +63,7 @@ namespace Docker
 
         public async Task<string> UpdateService(MyService service)
         {
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{GET_URI}/{service.Id}/update");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{GET_URI}/{service.Id ?? service.Name}/update");
 
             var serviceDocker = service.GetDockerService().AsJson();
 

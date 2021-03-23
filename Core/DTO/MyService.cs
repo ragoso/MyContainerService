@@ -39,6 +39,7 @@ namespace Core.DTO
         public string Id { get; set; }
         public string Name { get; init; }
         public string Image { get; init; }
+        public int Version { get; set; }
         public IEnumerable<string> Networks { get; init; }
         public IDictionary<string, string> Labels { get; set; }
         public IEnumerable<Volume> Volumes { get; set; }
@@ -95,6 +96,11 @@ namespace Core.DTO
         {
             InternalPort = internalPort;
             Protocol = protocol;
+        }
+
+        public Port()
+        {
+            
         }
 
         public int InternalPort { get; set; }

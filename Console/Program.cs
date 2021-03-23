@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using Mono.Options;
 using Grpc.Core;
+using GRPC;
 
 namespace Console
 {

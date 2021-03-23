@@ -8,8 +8,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Endpoint
 {
-    [Authorize(AuthenticationSchemes = 
-    JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = 
+    //JwtBearerDefaults.AuthenticationScheme)]
     public  class MyContainerServiceImpl : MyContainerService.MyContainerServiceBase
     {
         private readonly IServiceHandle _handle;

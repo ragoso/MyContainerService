@@ -1,0 +1,25 @@
+{
+    "Id": "ff6ge87kh0par2ychpm3lwujz",
+    "Name": "MCS",
+    "Image": "mcs:latest",
+    "Networks": [
+      "mcs_backend"
+    ],
+    "Labels": {
+      "createdByMyService": "true"
+    },
+    "Volumes": [
+      {
+        "ReadOnly": true,
+        "Source": "/var/run/docker.sock",
+        "Target": "/var/run/docker.sock"
+      }
+    ],
+    "Ports": [
+        {
+          "InternalPort": 80,
+          "ExternalPort": 80,
+          "Protocol": "tcp"
+        }
+      ]
+  }
