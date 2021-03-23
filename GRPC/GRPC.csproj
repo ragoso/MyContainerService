@@ -5,7 +5,7 @@
   </PropertyGroup>
 <ItemGroup>
     <Protobuf Include="..\Protos\myContainerService.proto" GrpcServices="Server,Client" />
-    
+    <Protobuf Include="..\Protos\myContainerImage.proto" GrpcServices="Server,Client" />
   </ItemGroup>
 
    <ItemGroup>

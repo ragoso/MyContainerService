@@ -22,7 +22,7 @@ namespace Endpoint
 
         public override async Task<CreateReply> Create(CreateRequest request, ServerCallContext context)
         {
-            var msg = await _handle.CreateService(request.Service.FromGrpcService());
+            var msg = await _handle.CreateService(request.Service.FromGrpcService(), true);
             return new CreateReply()
             {
                 Message = msg

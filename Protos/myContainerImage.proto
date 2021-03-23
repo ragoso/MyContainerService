@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option csharp_namespace = "Endpoint";
+
+package mycontainerimage;
+
+service MyContainerImage {
+  rpc Build (stream BuildRequest) returns (BuildReply);
+ 
+}
+
+message BuildRequest {
+  bytes tarFile = 1;
+  string tag = 2;
+}
+
+message BuildReply {
+  string message = 1;
+}
+

@@ -17,6 +17,7 @@ namespace Docker
     {
         private const string CREATE_URI = "/v1.24/services/create";
         private const string GET_URI = "/v1.24/services";
+        private const string NETWORK_URI = "/v1.24/networks";
         private const string MEDIA_TYPE = "application/json";
         private readonly HttpClient _httpClient;
         
@@ -25,10 +26,15 @@ namespace Docker
             _httpClient = httpClient;
         }
 
-        public async Task<string> CreateService(MyService service)
+        public async Task<string> CreateService(MyService service, bool ensureNetworks)
         {
             var dockerService = service.GetDockerService().AsJson();
 
+            if (ensureNetworks)
+            {
+                EnsureNetworks(service.Networks);
+            }
+            
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, CREATE_URI);
 
             requestMessage.Content = new StringContent(dockerService, Encoding.UTF8, MEDIA_TYPE);
@@ -37,6 +43,11 @@ namespace Docker
 
             return await response.Content.ReadAsStringAsync();
 
+        }
+
+        private void EnsureNetworks(IEnumerable<string> networks)
+        {
+            
         }
 
         public async Task<IEnumerable<MyService>> GetServices()

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Mono.Options;
 using Grpc.Core;
 using GRPC;
+using Core;
 
 namespace Console
 {
@@ -18,14 +19,19 @@ namespace Console
         Update,
         Remove,
         List,
+        Build,
         Non
     }
     class Program
     {
         private static string url = "https://localhost:5001";
-        private static string json = string.Empty;
+        private static string file = string.Empty;
         private static Actions action = Actions.Non;
         private static string token = string.Empty;
+        private static string tag = "latest";
+
+        private static IServiceHandle _serviceHandle;
+        private static IImageHandle _imageHandle;
 
         static void Main(string[] args)
         {
@@ -34,20 +40,19 @@ namespace Console
             {
                 ParserArgs(args);
 
-                var service = ReadMyServiceJson(json);
-
-                var client = GetClient(url);
-
                 switch(action)
                 {
                     case Actions.Create:
-                        Create(service, client);
+                        Create();
                         break;
                     case Actions.Remove:
-                        Remove(service, client);
+                        Remove();
                         break;
                     case Actions.Update:
-                        Update(service, client);
+                        Update();
+                        break;
+                    case Actions.Build:
+                        BuildImage();
                         break;
                     default:
                         throw new ArgumentOutOfRangeException("Invalid action informed.");
@@ -59,43 +64,51 @@ namespace Console
             }
 
         }
-
-        private static Metadata GetTokenHeader()
+        private static void BuildImage()
         {
-            var headers = new Metadata();
+            var client = GetImageClient(url);
 
-            headers.Add("Authorization", $"Bearer {token}");
+            _imageHandle = new ImageClientHandle(GetImageClient(url), token);
 
-            return headers;
+            using var fileStream = new FileStream(file, FileMode.Open);
+
+            var reply = _imageHandle.BuildImage(fileStream, tag).Result;
+
+            System.Console.WriteLine(reply);
+
         }
-        private static void Update(MyService service, MyContainerService.MyContainerServiceClient client)
+        private static void Update()
         {
-                    
             
-            var reply = client.Update(new UpdateRequest()
-            {
-                Service = service.ToGrpcService()
-            }, GetTokenHeader());
+            var service = ReadMyServiceJson(file);
 
-            System.Console.WriteLine(reply.Message);
+            _serviceHandle = new ServiceClientHandle(GetServiceClient(url), token);
+
+           var reply = _serviceHandle.UpdateService(service).Result;
+
+            System.Console.WriteLine(reply);
         }
 
-        private static void Remove(MyService service, MyContainerService.MyContainerServiceClient client)
+        private static void Remove()
         {
-            var reply = client.Remove(new RemoveRequest() {
-                ServiceNameOrId = service.Name
-            }, GetTokenHeader());
+            var service = ReadMyServiceJson(file);
 
-            System.Console.WriteLine(reply.Message);
+            _serviceHandle = new ServiceClientHandle(GetServiceClient(url), token);
+
+            var reply = _serviceHandle.RemoveService(service.Id ?? service.Name).Result;
+
+            System.Console.WriteLine(reply);
         }
 
-        private static void Create(MyService service, MyContainerService.MyContainerServiceClient client)
+        private static void Create()
         {
-            var reply = client.Create(new CreateRequest()
-            {
-                Service = service.ToGrpcService()
-            }, GetTokenHeader());
-            System.Console.WriteLine(reply.Message);
+            var service = ReadMyServiceJson(file);
+
+            _serviceHandle = new ServiceClientHandle(GetServiceClient(url), token);
+
+            var response = _serviceHandle.CreateService(service, true).Result;
+
+            System.Console.WriteLine(response);
         }
 
         private static void ParserArgs(IEnumerable<string> args)
@@ -105,8 +118,8 @@ namespace Console
             var opt = new OptionSet()
             {
                 {"u|url=", "The url of grpc endpoints", u => url = u },
-                {"t|token=", "The Bearer token", u => token = u},
-                {"j|json=", "The json of service to be handled", j => json = j},
+                {"f|file=", "The json of service or tar of image to be handled", j => file = j},
+                {"t|tag=", "The image tag to build. If not passed, latest be default.", t => tag = t },
                 {"a|action=", "The action to perform (create,update,remove)", a => action = (Actions)Enum.Parse(typeof(Actions), a)},
                 {"w|write", "Write json example", w => writeJson = w != null},
                 {"h|help", "Print help", h => showHelp = h != null}
@@ -135,15 +148,9 @@ namespace Console
                 Environment.Exit(0);       
             }
 
-            if (string.IsNullOrEmpty(token))
+            if (string.IsNullOrEmpty(file))
             {
-                System.Console.WriteLine("Token path must be passwd with -t or --token");
-                Environment.Exit(1);
-            }
-
-            if (string.IsNullOrEmpty(json))
-            {
-                System.Console.WriteLine("Json path must be passed with -j or --json");
+                System.Console.WriteLine("File path must be passed with -f or --f");
                 Environment.Exit(1);
             }
             
@@ -179,16 +186,30 @@ namespace Console
             System.Console.WriteLine(JsonConvert.SerializeObject(service));
         }
 
-        private static MyContainerService.MyContainerServiceClient GetClient(string url)
+        private static MyContainerService.MyContainerServiceClient GetServiceClient(string url)
+        {
+            GrpcChannel channel = CreateChannel(url);
+
+            var client = new MyContainerService.MyContainerServiceClient(channel);
+            return client;
+        }
+
+        private static GrpcChannel CreateChannel(string url)
         {
             var httpHandler = new HttpClientHandler();
             httpHandler.ServerCertificateCustomValidationCallback =
             HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
             var channel = GrpcChannel.ForAddress(url,
-            new GrpcChannelOptions { HttpHandler = httpHandler});
+            new GrpcChannelOptions { HttpHandler = httpHandler });
+            return channel;
+        }
 
-            var client = new MyContainerService.MyContainerServiceClient(channel);
+        private static MyContainerImage.MyContainerImageClient GetImageClient(string url)
+        {
+            GrpcChannel channel = CreateChannel(url);
+
+            var client = new MyContainerImage.MyContainerImageClient(channel);
             return client;
         }
 
