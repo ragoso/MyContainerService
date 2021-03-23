@@ -28,6 +28,7 @@ namespace Endpoint
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<MyContainerServiceImpl>();
+                endpoints.MapGrpcService<MyContainerImageImpl>();
 
                 endpoints.MapGet("/", async context =>
                 {

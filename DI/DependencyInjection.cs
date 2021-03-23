@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System;
+using HttpSocket;
+using System.Net.Http;
+using Docker;
 
 namespace DI
 {
@@ -10,7 +13,9 @@ namespace DI
     {
         public static void AddServiceHandle(this IServiceCollection services)
         {
-            services.AddScoped<IServiceHandle>(x => ServiceHandleFactory.CreateServiceHandle());
+            services.AddScoped<HttpClient>(x => UnixHttpClient.CreateHttpClient("/var/run/docker.sock"));
+            services.AddScoped<IServiceHandle, DockerServiceHandle>();
+            services.AddScoped<IImageHandle, DockerImageHandle>();
         }
 
         public static void AddTokenParser(this IServiceCollection services)
