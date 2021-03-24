@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Core;
 using Google.Protobuf;
@@ -27,7 +28,8 @@ namespace Endpoint
             var data = request.TarFile.ToByteArray();
             
             var tag = request.Tag;
-            var response = await _handle.BuildImage(data, tag);
+            var param = request.Params.Select(x => x);
+            var response = await _handle.BuildImage(data, param, tag);
 
             return new BuildReply()
             {

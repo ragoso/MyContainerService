@@ -29,7 +29,7 @@ namespace Console
         private static Actions action = Actions.Non;
         private static string token = string.Empty;
         private static string tag = "latest";
-
+        private static IList<string> buildParam = new List<string>();
         private static IServiceHandle _serviceHandle;
         private static IImageHandle _imageHandle;
 
@@ -75,7 +75,7 @@ namespace Console
 
             var fileBytes = File.ReadAllBytes(file);
 
-            var reply = _imageHandle.BuildImage(fileBytes, tag).Result;
+            var reply = _imageHandle.BuildImage(fileBytes, buildParam, tag).Result;
 
             System.Console.WriteLine(reply);
 
@@ -122,6 +122,7 @@ namespace Console
                 {"u|url=", "The url of grpc endpoints", u => url = u },
                 {"f|file=", "The json of service or tar of image to be handled", j => file = j},
                 {"t|tag=", "The image tag to build. If not passed, latest be default.", t => tag = t },
+                {"p|param=", "The param to build. Ex: foo=bar", p => buildParam.Add(p) },
                 {"a|action=", "The action to perform (create,update,remove)", a => action = (Actions)Enum.Parse(typeof(Actions), a)},
                 {"w|write", "Write json example", w => writeJson = w != null},
                 {"h|help", "Print help", h => showHelp = h != null}

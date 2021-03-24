@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Core;
 using Core.DTO;
@@ -19,15 +20,24 @@ namespace Console
             _token = token;
         }
 
-        public async Task<string> BuildImage(byte[] imageFile, string tag)
+        public async Task<string> BuildImage(byte[] imageFile, IEnumerable<string> param, string tag)
         {
             var fileByte = Google.Protobuf.ByteString.CopyFrom(imageFile);
 
-            var reply = await Task.Run(() => _client.Build(new BuildRequest()
+            var request = new BuildRequest()
             {
                 Tag = tag,
                 TarFile = fileByte
-            }));
+            };
+
+            if (param?.Any() ?? false)
+            {
+                request.Params.AddRange(param);
+            }
+
+            var reply = await Task.Run(() => _client.Build(request));
+
+
 
             return reply.Message;
         }

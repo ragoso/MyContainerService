@@ -12,6 +12,7 @@ service MyContainerImage {
 message BuildRequest {
   bytes tarFile = 1;
   string tag = 2;
+  repeated string params = 3;
 }
 
 message BuildReply {
