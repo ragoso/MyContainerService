@@ -76,9 +76,9 @@ namespace Docker
         {
             var id = !string.IsNullOrEmpty(service.Id) ? service.Id : service.Name;
 
-            var newVersion = await GetLastServiceVersion(id);
+            var version = await GetLastServiceVersion(id);
 
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{GET_URI}/{id}/update?version={newVersion}");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{GET_URI}/{id}/update?version={version}");
 
             var serviceDocker = service.GetDockerService().Spec.AsJson();
 
@@ -86,7 +86,7 @@ namespace Docker
 
             var response = await _httpClient.SendAsync(requestMessage);
 
-            return await response.Content.ReadAsStringAsync() + newVersion;
+            return await response.Content.ReadAsStringAsync();
         }
 
         private async Task<int> GetLastServiceVersion(string id)
@@ -99,7 +99,7 @@ namespace Docker
 
             var service = body.FromJson<DockerServiceResponse>();
 
-            return service.Version;
+            return service.Version.Index;
         }
     }
 }

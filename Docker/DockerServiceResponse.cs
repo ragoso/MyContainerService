@@ -8,8 +8,7 @@ namespace Docker
     {
         public DockerService Spec { get; set; }
         public string ID { get; set; }
-        [JsonProperty("Version.Index")]
-        public int Version {get; set;}
+        public Version Version {get; set;}
         public string Image => Spec.TaskTemplate.ContainerSpec.Image;
         public string Name => Spec.Name;
         [JsonIgnore]
@@ -21,6 +20,14 @@ namespace Docker
         [JsonIgnore]
         public IEnumerable<Port> Ports => Spec.EndpointSpec.Ports;
         
+        public DockerServiceResponse()
+        {
+            Version = new Version();
+        }
+    }
 
+    public class Version
+    {
+        public int Index;
     }
 }

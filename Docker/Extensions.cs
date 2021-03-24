@@ -13,7 +13,9 @@ namespace Docker
             return new DockerServiceResponse()
             {
                 ID = myService.Id,
-                Version = myService.Version,
+                Version = new Version(){
+                    Index = myService.Version
+                },
                 Spec = new DockerService()
                     {
                         Name = myService.Name,
@@ -56,7 +58,7 @@ namespace Docker
            {
                 Id = service.ID,
                 Labels = service.Labels,
-                Version = service.Version,
+                Version = service.Version.Index,
                 Volumes = service.Mounts?.Select(x => new Volume(x.ReadOnly, x.Source, x.Target)),
                 Ports = service.Ports?.Select(x => new Core.DTO.Port(x.TargetPort, x.PublishedPort, x.Protocol))
            };
