@@ -1,9 +1,8 @@
 {
-    "Id": "ff6ge87kh0par2ychpm3lwujz",
-    "Name": "MCS",
+    "Name": "mcs_MCS",
     "Image": "mcs:latest",
     "Networks": [
-      "mcs_backend"
+      "mcs_default"
     ],
     "Labels": {
       "createdByMyService": "true"
@@ -17,7 +16,7 @@
     ],
     "Ports": [
         {
-          "InternalPort": 80,
+          "InternalPort": 5000,
           "ExternalPort": 80,
           "Protocol": "tcp"
         }

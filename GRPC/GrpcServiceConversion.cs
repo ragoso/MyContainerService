@@ -21,6 +21,7 @@ namespace GRPC
             return new MyService(service.Name, service.Image)
             {
                 Id = service.Id,
+                Version = service.Version,
                 Labels = service.Labels.ToDictionary(x => x.Key, y => y.Value),
                 Networks = service.Networks,
                 Volumes = service.Volume?.Select(x => new Core.DTO.Volume(x.ReadOnly, x.Source, x.Target)),
@@ -34,6 +35,7 @@ namespace GRPC
                 Id = service.Id ?? string.Empty,
                 Name = service.Name,
                 Image = service.Image,
+                Version = service.Version
             };
 
             if (service.Labels?.Any() ?? false)

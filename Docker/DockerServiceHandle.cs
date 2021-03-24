@@ -28,7 +28,7 @@ namespace Docker
 
         public async Task<string> CreateService(MyService service, bool ensureNetworks)
         {
-            var dockerService = service.GetDockerService().AsJson();
+            var dockerService = service.GetDockerService().Spec.AsJson();
 
             if (ensureNetworks)
             {
@@ -74,15 +74,32 @@ namespace Docker
 
         public async Task<string> UpdateService(MyService service)
         {
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{GET_URI}/{service.Id ?? service.Name}/update");
+            var id = !string.IsNullOrEmpty(service.Id) ? service.Id : service.Name;
 
-            var serviceDocker = service.GetDockerService().AsJson();
+            var newVersion = await GetLastServiceVersion(id);
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{GET_URI}/{id}/update?version={newVersion}");
+
+            var serviceDocker = service.GetDockerService().Spec.AsJson();
 
             requestMessage.Content = new StringContent(serviceDocker, Encoding.UTF8, MEDIA_TYPE);           
 
             var response = await _httpClient.SendAsync(requestMessage);
 
-            return await response.Content.ReadAsStringAsync();
+            return await response.Content.ReadAsStringAsync() + newVersion;
+        }
+
+        private async Task<int> GetLastServiceVersion(string id)
+        {
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{GET_URI}/{id}");
+
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            var body = await response.Content.ReadAsStringAsync();
+
+            var service = body.FromJson<DockerServiceResponse>();
+
+            return service.Version;
         }
     }
 }

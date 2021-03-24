@@ -51,7 +51,7 @@ message Service {
   repeated Label labels = 5;
   repeated Volume volume = 6;
   repeated Port port = 7;
-
+  int32 version = 8;
 }
 
 message Label {

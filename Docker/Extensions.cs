@@ -8,40 +8,46 @@ namespace Docker
 {
     public static class Extensions
     {
-        public static DockerService GetDockerService(this MyService myService)
+        public static DockerServiceResponse GetDockerService(this MyService myService)
         {
-            return new DockerService()
+            return new DockerServiceResponse()
             {
-                Name = myService.Name,
-                Labels = myService.Labels,
-                TaskTemplate = new TaskTemplate()
-                {
-                    ContainerSpec = new ContainerSpec()
+                ID = myService.Id,
+                Version = myService.Version,
+                Spec = new DockerService()
                     {
-                        Image = myService.Image,
-                        Mounts = myService.Volumes?.Select(x => new Mount()
+                        Name = myService.Name,
+                        Labels = myService.Labels,
+                        TaskTemplate = new TaskTemplate()
                         {
-                            ReadOnly = x.ReadOnly,
-                            Source = x?.Source,
-                            Target = x.Target
-                        })?.ToList()
-                    },
-                    Networks = myService.Networks?.Select(x => new Network()
-                    {
-                        Target = x
-                    
-                    })?.ToList()
-                },
-                EndpointSpec = new EndpointSpec()
-                {
-                    Ports = myService.Ports.Select(x => new Port()
-                    {
-                        Protocol = x.Protocol,
-                        PublishedPort = x.ExternalPort ?? 0,
-                        TargetPort = x.InternalPort
-                    }).ToList()
-                }
+                            ContainerSpec = new ContainerSpec()
+                            {
+                                Image = myService.Image,
+                                Mounts = myService.Volumes?.Select(x => new Mount()
+                                {
+                                    ReadOnly = x.ReadOnly,
+                                    Source = x?.Source,
+                                    Target = x.Target
+                                })?.ToList()
+                            },
+                            Networks = myService.Networks?.Select(x => new Network()
+                            {
+                                Target = x
+                            
+                            })?.ToList()
+                        },
+                        EndpointSpec = new EndpointSpec()
+                        {
+                            Ports = myService.Ports.Select(x => new Port()
+                            {
+                                Protocol = x.Protocol,
+                                PublishedPort = x.ExternalPort ?? 0,
+                                TargetPort = x.InternalPort
+                            }).ToList()
+                        }
+                    }
             };
+            
         }
 
         public static MyService GetMyService(this DockerServiceResponse service)
@@ -50,6 +56,7 @@ namespace Docker
            {
                 Id = service.ID,
                 Labels = service.Labels,
+                Version = service.Version,
                 Volumes = service.Mounts?.Select(x => new Volume(x.ReadOnly, x.Source, x.Target)),
                 Ports = service.Ports?.Select(x => new Core.DTO.Port(x.TargetPort, x.PublishedPort, x.Protocol))
            };
@@ -67,6 +74,7 @@ namespace Docker
 
         public static string AsJson<T>(this T obj)
         {
+
             return JsonConvert.SerializeObject(obj);
         }
 
