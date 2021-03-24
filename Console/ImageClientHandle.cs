@@ -19,9 +19,9 @@ namespace Console
             _token = token;
         }
 
-        public async Task<string> BuildImage(Stream tar, string tag)
+        public async Task<string> BuildImage(byte[] imageFile, string tag)
         {
-            var fileByte = Google.Protobuf.ByteString.FromStream(tar);
+            var fileByte = Google.Protobuf.ByteString.CopyFrom(imageFile);
 
             var reply = await Task.Run(() => _client.Build(new BuildRequest()
             {

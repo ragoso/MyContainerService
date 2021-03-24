@@ -1,6 +1,9 @@
+using System;
 using System.IO;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Core;
 
 namespace Docker
@@ -13,11 +16,18 @@ namespace Docker
         {
             _httpClient = httpClient;
         }
-        public async Task<string> BuildImage(Stream tar, string tag)
+        public async Task<string> BuildImage(byte[] imageFile, string tag)
         {
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{BUILD_URI}?t={tag}");
+            var query = HttpUtility.ParseQueryString(string.Empty);
+            query.Add("t", tag);
+            query.Add("q", "true");
+            //query.Add("dockerfile", "./Dockerfile");
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{BUILD_URI}?{query.ToString()}");
             
-            requestMessage.Content = new StreamContent(tar);
+            var tarAsString = Encoding.UTF8.GetString(imageFile);
+
+            requestMessage.Content = new StringContent(tarAsString, Encoding.UTF8, "application/x-tar");
 
             var response = await _httpClient.SendAsync(requestMessage);
 

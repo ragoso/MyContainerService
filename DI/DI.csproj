@@ -12,4 +12,9 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
+
+    <Target Name="SpicNSpan"  AfterTargets="Clean">
+      <RemoveDir Directories="$(BaseIntermediateOutputPath)" />
+      <RemoveDir Directories="$(BaseOutputPath)" />
+  </Target>
 </Project>

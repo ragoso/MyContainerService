@@ -24,12 +24,10 @@ namespace Endpoint
 
         public override async Task<BuildReply> Build(BuildRequest request, ServerCallContext context)
         {
-            using var memStream = new MemoryStream();
-            
-            request.TarFile.WriteTo(memStream);
+            var data = request.TarFile.ToByteArray();
             
             var tag = request.Tag;
-            var response = await _handle.BuildImage(memStream, tag);
+            var response = await _handle.BuildImage(data, tag);
 
             return new BuildReply()
             {

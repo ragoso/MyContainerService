@@ -5,6 +5,6 @@ namespace Core
 {
     public interface IImageHandle
     {
-        Task<string> BuildImage(Stream tar, string tag);
+        Task<string> BuildImage(byte[] imageFile, string tag);
     }
 }

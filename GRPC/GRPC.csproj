@@ -25,5 +25,10 @@
    <ItemGroup>
      <ProjectReference Include="..\Core\Core.csproj" />
    </ItemGroup>
- 
+   
+  <Target Name="SpicNSpan"  AfterTargets="Clean">
+      <RemoveDir Directories="$(BaseIntermediateOutputPath)" />
+      <RemoveDir Directories="$(BaseOutputPath)" />
+  </Target>
+
 </Project>

@@ -66,11 +66,16 @@ namespace Console
         }
         private static void BuildImage()
         {
+            if (!File.Exists(file))
+            {
+                throw new FileNotFoundException();
+            }
+            
             _imageHandle = new ImageClientHandle(GetImageClient(url), token);
 
-            using var fileStream = new FileStream(file, FileMode.Open);
+            var fileBytes = File.ReadAllBytes(file);
 
-            var reply = _imageHandle.BuildImage(fileStream, tag).Result;
+            var reply = _imageHandle.BuildImage(fileBytes, tag).Result;
 
             System.Console.WriteLine(reply);
 
