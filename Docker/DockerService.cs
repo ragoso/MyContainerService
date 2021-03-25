@@ -38,6 +38,8 @@ namespace Docker
     {
         public string Image { get; set; }
         public List<Mount> Mounts { get; set; }
+
+        public IDictionary<string, string> Labels { get; set; }
         public string User { get; set; }
     }
 
@@ -134,7 +136,6 @@ namespace Docker
         public Mode Mode { get; set; }
         public UpdateConfig UpdateConfig { get; set; }
         public EndpointSpec EndpointSpec { get; set; }
-        public IDictionary<string, string> Labels { get; set; }
     }
 
 

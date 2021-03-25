@@ -14,7 +14,7 @@ namespace Docker
         [JsonIgnore]
         public IEnumerable<string> Networks => Spec.TaskTemplate.Networks?.Select(x => x.Target);
         [JsonIgnore]
-        public IDictionary<string, string> Labels => Spec.Labels;
+        public IDictionary<string, string> Labels => Spec.TaskTemplate.ContainerSpec.Labels;
         [JsonIgnore]
         public IEnumerable<Mount> Mounts => Spec.TaskTemplate.ContainerSpec.Mounts;
         [JsonIgnore]

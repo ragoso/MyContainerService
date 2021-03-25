@@ -19,12 +19,12 @@ namespace Docker
                 Spec = new DockerService()
                     {
                         Name = myService.Name,
-                        Labels = myService.Labels,
                         TaskTemplate = new TaskTemplate()
                         {
                             ContainerSpec = new ContainerSpec()
                             {
                                 Image = myService.Image,
+                                Labels = myService.Labels,
                                 Mounts = myService.Volumes?.Select(x => new Mount()
                                 {
                                     ReadOnly = x.ReadOnly,
