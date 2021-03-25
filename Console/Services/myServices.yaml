@@ -1,0 +1,15 @@
+- id: ''
+  name: mcs_MCS
+  image: mcs:latest
+  networks:
+  - mcs_default
+  labels:
+    createdByMyService: true
+  volumes:
+  - ReadOnly: true
+    source: /var/run/docker.sock
+    target: /var/run/docker.sock
+  ports:
+  - internal_port: 80
+    external_port: 5000
+    protocol: tcp

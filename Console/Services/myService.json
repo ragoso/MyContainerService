@@ -1,4 +1,4 @@
-{
+[{
     "Name": "mcs_MCS",
     "Image": "mcs:latest",
     "Networks": [
@@ -16,9 +16,9 @@
     ],
     "Ports": [
         {
-          "InternalPort": 5000,
-          "ExternalPort": 80,
+          "InternalPort": 80,
+          "ExternalPort": 5000,
           "Protocol": "tcp"
         }
       ]
-  }
+}]

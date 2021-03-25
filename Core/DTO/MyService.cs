@@ -38,7 +38,7 @@ namespace Core.DTO
 
         public string Id { get; set; }
         public string Name { get; init; }
-        public string Image { get; init; }
+        public string Image { get; set; }
         public int Version { get; set; }
         public IEnumerable<string> Networks { get; init; }
         public IDictionary<string, string> Labels { get; set; }

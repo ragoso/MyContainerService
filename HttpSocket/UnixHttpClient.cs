@@ -13,7 +13,7 @@ namespace HttpSocket
         private static async ValueTask<Stream> SocketConnectionAsync(SocketsHttpConnectionContext socketsHttpConnectionContext, CancellationToken cancellationToken)
         {
             var socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.IP);
-            
+
             await socket.ConnectAsync(_endPoint);
             
             return  new NetworkStream(socket);;
