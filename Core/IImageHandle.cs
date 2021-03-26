@@ -7,5 +7,6 @@ namespace Core
     public interface IImageHandle
     {
         Task<string> BuildImage(byte[] imageFile, IEnumerable<string> param, string tag);
+        Task<string> BuildImage(Stream stream, IEnumerable<string> param, string tag);
     }
 }

@@ -20,7 +20,7 @@ namespace Docker
 
             _httpClient.Timeout = new TimeSpan(0, 15, 0);
         }
-        public async Task<string> BuildImage(byte[] imageFile, IEnumerable<string> param, string tag)
+        public async Task<string> BuildImage(Stream stream, IEnumerable<string> param, string tag)
         {
             var buildArgs = GetBuildArgs(param);
             var query = HttpUtility.ParseQueryString(string.Empty);
@@ -30,16 +30,17 @@ namespace Docker
 
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{BUILD_URI}?{query.ToString()}");
 
-            //var tarAsString = Encoding.UTF8.GetString(imageFile);
-
-            using var memStream = new MemoryStream(imageFile);
-
-            requestMessage.Content = new StreamContent(memStream);
-            //requestMessage.Content = new StringContent(tarAsString, Encoding.UTF8, "application/x-tar");
+            requestMessage.Content = new StreamContent(stream);
 
             var response = await _httpClient.SendAsync(requestMessage);
 
             return await response.Content.ReadAsStringAsync();
+        }
+        public async Task<string> BuildImage(byte[] imageFile, IEnumerable<string> param, string tag)
+        {
+            using var memStream = new MemoryStream(imageFile);
+
+            return await BuildImage(memStream, param, tag);
 
         }
 

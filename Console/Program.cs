@@ -27,6 +27,7 @@ namespace Console
     {
         private static string url = "https://localhost:5001";
         private static string file = string.Empty;
+        private static bool useStream = false;
         private static Actions action = Actions.Non;
         private static string token = string.Empty;
         private static string tag = string.Empty;
@@ -79,9 +80,20 @@ namespace Console
             
             _imageHandle = new ImageClientHandle(GetImageClient(url), token);
 
-            var fileBytes = File.ReadAllBytes(file);
+            
 
-            var reply = _imageHandle.BuildImage(fileBytes, buildParam, tag).Result;
+            string reply;
+            if (useStream)
+            {
+                var filesStream = new FileStream(file, FileMode.Open);
+
+                reply = _imageHandle.BuildImage(filesStream, buildParam, tag).Result;
+            }
+            else
+            {
+                var fileBytes = File.ReadAllBytes(file);
+                reply = _imageHandle.BuildImage(fileBytes, buildParam, tag).Result;
+            }
 
             System.Console.WriteLine(reply);
 
@@ -144,6 +156,7 @@ namespace Console
                 {"f|file=", "The yaml or json of service or tar of image to be handled", j => file = j},
                 {"t|tag=", "The image tag to build and update.", t => tag = t },
                 {"p|param=", "The param to build. Ex: foo=bar", p => buildParam.Add(p) },
+                {"s|stream", "Use streaming transfer to build images.", p => useStream = p != null},
                 {"a|action=", "The action to perform (create,update,remove)", a => action = (Actions)Enum.Parse(typeof(Actions), a)},
                 {"w|write", "Write yaml example", w => writeYaml = w != null},
                 {"h|help", "Print help", h => showHelp = h != null}

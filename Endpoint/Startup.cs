@@ -8,11 +8,15 @@ using Microsoft.Extensions.Hosting;
 namespace Endpoint
 {
     public class Startup
-    {
+    { 
         
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddGrpc();
+            services.AddGrpc(options => 
+            {
+                options.MaxReceiveMessageSize = 30 * 1024 * 1024;
+            });
+
             services.AddServiceHandle();
         }
 

@@ -6,6 +6,7 @@ package mycontainerimage;
 
 service MyContainerImage {
   rpc Build (BuildRequest) returns (BuildReply);
+  rpc BuildStream (stream BuildRequest) returns (BuildReply);
  
 }
 
