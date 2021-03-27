@@ -17,7 +17,7 @@ namespace Endpoint
     {
         private readonly IImageHandle _handle;
         private readonly ILogger<MyContainerImageImpl> _logger;
-        private static MemoryStream _stream;
+
         public MyContainerImageImpl(ILogger<MyContainerImageImpl> logger, IImageHandle handle)
         {
             _logger = logger;
@@ -40,30 +40,18 @@ namespace Endpoint
 
         public override async Task<BuildReply> BuildStream(IAsyncStreamReader<BuildRequest> requestStream, ServerCallContext context)
         {
-            if (_stream is null)
-            {
-                 _stream = new MemoryStream();
-            }
-            
-            // THIS WORK?
-            if (await requestStream.MoveNext())
-            {
-                requestStream.Current.WriteTo(_stream);
-            }
-
+            using var stream = new MemoryStream();
+               
             var param = requestStream.Current.Params;
             var tag = requestStream.Current.Tag;
 
-            string response;
-            try
+            while(await requestStream.MoveNext())
             {
-                response = await _handle.BuildImage(_stream, param, tag);
+                requestStream.Current.WriteTo(stream);
             }
-            finally
-            {
-                _stream.Dispose();
-            }
-
+            
+            var response = await _handle.BuildImage(stream, param, tag);
+            
             return new BuildReply()
             {
                 Message = response

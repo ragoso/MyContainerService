@@ -40,6 +40,7 @@ namespace Console
                 var request = CreateRequest(buffer, param, tag);
 
                 await client.RequestStream.WriteAsync(request);
+
             }
 
             await client.RequestStream.CompleteAsync();
