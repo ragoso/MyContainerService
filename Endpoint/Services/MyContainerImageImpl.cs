@@ -54,7 +54,7 @@ namespace Endpoint
                     @params = requestStream.Current.Params;
                 }
 
-                requestStream.Current.WriteTo(stream);
+                requestStream.Current.TarFile.WriteTo(stream);
             }
             
             var response = await _handle.BuildImage(stream, @params, tag);

@@ -86,8 +86,8 @@ namespace Console
             string reply;
             if (useStream)
             {
-                var filesStream = new FileStream(file, FileMode.Open);
-
+                var filesStream = File.OpenRead(file);
+                
                 reply = _imageHandle.BuildImage(filesStream, buildParam, tag).Result;
             }
             else

@@ -48,7 +48,7 @@ namespace Console
 
                 await client.RequestStream.WriteAsync(request);
             }
-
+            
             await client.RequestStream.CompleteAsync();
 
             return client.ResponseAsync.Result.Message;
