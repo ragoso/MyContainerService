@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Core;
 using Endpoint;
@@ -44,6 +45,12 @@ namespace Console
 
             while((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
             {
+                var percent = (stream.Position * 100) / stream.Length;
+
+                var byteInString = Encoding.UTF8.GetString(buffer);
+
+                System.Console.WriteLine($"Loading {percent}%");
+
                 request.TarFile = Google.Protobuf.ByteString.CopyFrom(buffer);
 
                 await client.RequestStream.WriteAsync(request);
