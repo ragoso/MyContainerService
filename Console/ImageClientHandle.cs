@@ -10,12 +10,17 @@ namespace Console
     internal class ImageClientHandle : ClientHandle, IImageHandle
     {
         private readonly MyContainerImage.MyContainerImageClient _client;
-        private const int BUFFER_LENGTH = 1 * 1024;
+        private readonly int _bufferLength = 1 * 1024;
         private readonly string _token;
         public ImageClientHandle(MyContainerImage.MyContainerImageClient client, string token): base(token)
         {
             _client = client;
             _token = token;
+        }
+
+        public ImageClientHandle(MyContainerImage.MyContainerImageClient client, string token, int bufferLength): this(client, token)
+        {
+            _bufferLength = bufferLength;
         }
 
         public async Task<string> BuildImage(byte[] imageFile, IEnumerable<string> param, string tag)
@@ -31,7 +36,7 @@ namespace Console
         {
             var client = _client.BuildStream();
 
-            byte[] buffer = new byte[BUFFER_LENGTH];
+            byte[] buffer = new byte[_bufferLength];
 
             int bytesRead = 0;
 

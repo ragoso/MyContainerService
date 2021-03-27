@@ -28,6 +28,7 @@ namespace Console
         private static string url = "https://localhost:5001";
         private static string file = string.Empty;
         private static bool useStream = false;
+        private static int bufferLength = 4 * 1024;
         private static Actions action = Actions.Non;
         private static string token = string.Empty;
         private static string tag = string.Empty;
@@ -78,7 +79,7 @@ namespace Console
                 throw new ArgumentNullException("tag");
             }
             
-            _imageHandle = new ImageClientHandle(GetImageClient(url), token);
+            _imageHandle = new ImageClientHandle(GetImageClient(url), token, bufferLength);
 
             
 
@@ -157,6 +158,7 @@ namespace Console
                 {"t|tag=", "The image tag to build and update.", t => tag = t },
                 {"p|param=", "The param to build. Ex: foo=bar", p => buildParam.Add(p) },
                 {"s|stream", "Use streaming transfer to build images.", p => useStream = p != null},
+                {"b|buffer=", "The buffer size to streaming image build", b => bufferLength = int.Parse(b)},
                 {"a|action=", "The action to perform (create,update,remove)", a => action = (Actions)Enum.Parse(typeof(Actions), a)},
                 {"w|write", "Write yaml example", w => writeYaml = w != null},
                 {"h|help", "Print help", h => showHelp = h != null}
