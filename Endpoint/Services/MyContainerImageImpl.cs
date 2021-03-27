@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,16 +42,22 @@ namespace Endpoint
         public override async Task<BuildReply> BuildStream(IAsyncStreamReader<BuildRequest> requestStream, ServerCallContext context)
         {
             using var stream = new MemoryStream();
-               
-            var param = requestStream.Current.Params;
-            var tag = requestStream.Current.Tag;
 
+            string tag = string.Empty;
+            IEnumerable<string> @params = null;
+            
             while(await requestStream.MoveNext())
             {
+                if (requestStream.Current != null && string.IsNullOrEmpty(tag) && @params == null)
+                {
+                    tag = requestStream.Current.Tag.Trim();
+                    @params = requestStream.Current.Params;
+                }
+
                 requestStream.Current.WriteTo(stream);
             }
             
-            var response = await _handle.BuildImage(stream, param, tag);
+            var response = await _handle.BuildImage(stream, @params, tag);
             
             return new BuildReply()
             {
