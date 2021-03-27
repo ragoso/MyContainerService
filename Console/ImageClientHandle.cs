@@ -40,12 +40,13 @@ namespace Console
 
             int bytesRead = 0;
 
+            var request = CreateRequest(buffer, param, tag);
+
             while((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
             {
-                var request = CreateRequest(buffer, param, tag);
+                request.TarFile = Google.Protobuf.ByteString.CopyFrom(buffer);
 
                 await client.RequestStream.WriteAsync(request);
-
             }
 
             await client.RequestStream.CompleteAsync();
