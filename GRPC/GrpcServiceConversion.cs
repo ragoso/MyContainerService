@@ -47,7 +47,7 @@ namespace GRPC
                 }));
             }
 
-            if (service.Labels?.Any() ?? false)
+            if (service.Volumes?.Any() ?? false)
             {
                 serviceGrpc.Volume.AddRange(service.Volumes?.Select(x => new Endpoint.Volume()
                 {
