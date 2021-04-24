@@ -106,13 +106,13 @@ namespace Console
                 throw new ArgumentNullException("tag");
             }
 
-            var services = ReadMyServiceFile();
-
-            services.FirstOrDefault().Image = tag;
-
             _serviceHandle = new ServiceClientHandle(GetServiceClient(url), token);
 
+            var services = ReadMyServiceFile();
+
             services.ToList().ForEach(x => {
+
+                if(string.IsNullOrEmpty(x.Image)) x.Image = tag;
                 
                 var reply = _serviceHandle.UpdateService(x).Result;
 
